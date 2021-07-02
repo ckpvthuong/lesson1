@@ -1,0 +1,10 @@
+version: "3.9"
+
+services:
+  lesson2:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8001
+    volumes:
+      - .:/code1
+    ports:
+      - "8001:8001"
