@@ -24,7 +24,7 @@ SECRET_KEY = 'django-insecure-agd!y_+igmxmml8*=enjil3orl_^bm1q1g&*bj-9on)#sh&by3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -121,3 +121,12 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': [
+        # 'rest_framework.renderers.JSONRenderer',
+        'common.renderers.EmberJSONRenderer'
+    ],
+    'EXCEPTION_HANDLER': 'common.errors.custom_exception_handler',
+    'DEFAULT_PAGINATION_CLASS': 'common.paging.CustomPageNumberPagination',
+    'PAGE_SIZE': 1
+}
