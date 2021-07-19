@@ -89,4 +89,9 @@ db.sqlite3
 .idea
 .env
 venv
+linux-venv
+app.log
+static
+uwsgi.ini
 config/settings/local.py
+db.sqlite3*

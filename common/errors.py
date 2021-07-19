@@ -1,7 +1,9 @@
 from _datetime import datetime
 
+from django.http import JsonResponse
+from django.utils.translation import gettext_lazy as _
 from rest_framework import status
-from rest_framework.exceptions import APIException
+from rest_framework.exceptions import APIException, _get_error_details
 from rest_framework.views import exception_handler
 
 from config.settings.default import DEBUG
@@ -41,6 +43,32 @@ def custom_exception_handler(exc, context):
         response.content_type = 'application/json'
 
     return response
+
+
+def handler500(request, *args, **kwargs):
+    data = {
+        'status': "ERROR",
+        'body': None,
+        'error': {
+            'message': ErrInternal.default_detail,
+            'code': ErrInternal.default_code,
+            'timestamp': datetime.now(),
+        }
+    }
+    return JsonResponse(data, status=ErrInternal.status_code)
+
+
+def handler404(request, exception, *args, **kwargs):
+    data = {
+        'status': "ERROR",
+        'body': None,
+        'error': {
+            'message': PageNotFound.default_detail,
+            'code': PageNotFound.default_code,
+            'timestamp': datetime.now(),
+        }
+    }
+    return JsonResponse(data, status=PageNotFound.status_code)
 
 
 class PageNotFound(APIException):
@@ -93,7 +121,6 @@ class ErrCannotUpdateEntity(ErrAppEntity):
     default_code = 'ErrCannotUpdate'
 
 
-
 class ErrCannotGetEntity(ErrAppEntity):
     status_code = status.HTTP_400_BAD_REQUEST
     default_detail = 'Can not get entity '
@@ -124,3 +151,9 @@ class ErrUnauthorized(ErrAppEntity):
     status_code = status.HTTP_401_UNAUTHORIZED
     default_detail = 'invalid token'
     default_code = 'UNAUTHORIZED'
+
+
+class BadRequestError(APIException):
+    status_code = status.HTTP_400_BAD_REQUEST
+    default_detail = 'bad request'
+    default_code = 'bad_request'

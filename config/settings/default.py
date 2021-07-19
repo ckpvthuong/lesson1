@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 import os
+from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -35,8 +36,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'module.survey',
+    'django_extensions',
     'rest_framework',
+    'djoser',
+    'module.survey',
+
 ]
 
 MIDDLEWARE = [
@@ -114,7 +118,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
-
+# STATIC_ROOT = 'static'
 STATIC_URL = '/static/'
 
 # Default primary key field type
@@ -122,6 +126,9 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'module.survey.backends.CustomJWTAuthentication',
+    ),
     'DEFAULT_RENDERER_CLASSES': [
         # 'rest_framework.renderers.JSONRenderer',
         'common.renderers.EmberJSONRenderer'
@@ -130,3 +137,35 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'common.paging.CustomPageNumberPagination',
     'PAGE_SIZE': 1
 }
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=30),
+}
+
+AUTH_USER_MODEL = 'survey.User'
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/myredis",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'DEBUG',
+    },
+}
+
