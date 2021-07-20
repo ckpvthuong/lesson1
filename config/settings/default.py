@@ -176,4 +176,8 @@ DJOSER = {
     'SERIALIZERS': {
         'user_create': 'module.survey.serializers.CustomUserCreateSerializer',
     },
+    'SEND_ACTIVATION_EMAIL': True,
+    'ACTIVATION_URL': '#/activate/{uid}/{token}',
+    'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
+    'USERNAME_RESET_CONFIRM_URL': '#/username/reset/confirm/{uid}/{token}',
 }
