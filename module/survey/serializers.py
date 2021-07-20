@@ -1,8 +1,11 @@
-from django.db.models import Q
+from django.contrib.auth import get_user_model
+from djoser.serializers import UserCreateSerializer
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from module.survey.models import Survey, Question, Answer
+
+User = get_user_model()
 
 
 class AnswerSerializer(serializers.ModelSerializer):
@@ -57,3 +60,9 @@ class SurveyUpdateSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'name': {'required': False, 'allow_null': True}
         }
+
+
+class CustomUserCreateSerializer(UserCreateSerializer):
+    class Meta(UserCreateSerializer.Meta):
+        #fields = ['username', 'id', 'email', 'password']
+        extra_kwargs = {'email': {'required': True, 'allow_null': True}}

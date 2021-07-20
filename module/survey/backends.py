@@ -3,6 +3,7 @@ import json
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
 from django.core.cache import cache
+from django.db.models import Q
 from rest_framework import HTTP_HEADER_ENCODING
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -18,7 +19,7 @@ class CustomModelBackend(ModelBackend):
         if username is None or password is None:
             return
         try:
-            user = UserModel._default_manager.get_by_natural_key(username)
+            user = UserModel._default_manager.get(Q(username=username) | Q(email=username))
         except UserModel.DoesNotExist:
             # Run the default password hasher once to reduce the timing
             # difference between an existing and a nonexistent user (#20760).

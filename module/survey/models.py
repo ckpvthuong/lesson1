@@ -1,6 +1,7 @@
 from django.apps import apps
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import AbstractUser, UserManager
+from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
 
 
@@ -57,6 +58,12 @@ class CustomUserManager(UserManager):
 
 class User(AbstractUser, TimeStampMixin):
     objects = CustomUserManager()
+    username = models.CharField(error_messages={'unique': 'A user with that username already existss.'},
+                                  help_text='Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.',
+                                  max_length=150, unique=True,
+                                  validators=[UnicodeUsernameValidator()],
+                                  verbose_name='username')
+    email = models.EmailField(max_length=254, verbose_name='email address', unique=True, null=True, blank=False, error_messages={'unique': 'A user with that email already exists.'})
 
     @property
     def full_name(self):
